@@ -136,7 +136,7 @@ const callSendAPI = async (psid, message, token) => {
 
 const sendRoleMenu = async (psid, token) => {
   await callSendAPI(psid, {
-    text: "Hello! I'm Aithena, TCL's virtual assistant. \nWelcome to TCL Global, a world-leading edtech agency with 20+ branches across 13+ countries and 60,000+ students guided so far! \n Whether you want to talk to any of our counselors or just have quesrtions that I can answer for you, I'll get you there in a few clicks! \n\n Let's get started! what's your role?",
+    text: "Hello! I'm Aithena, TCL's virtual assistant. 🤓 \n\nWelcome to TCL Global, a world-leading edtech agency with 20+ branches across 13+ countries and 60,000+ students guided so far! 🎉 \n\nWhether you want to talk to any of our counselors or just have quesrtions that I can answer for you, I'll get you there in a few clicks! 😎 \n\nLet's get started! what's your role?",
     quick_replies: [
       { content_type: 'text', title: 'Student', payload: 'ROLE_STUDENT' },
       { content_type: 'text', title: 'Partner Agency', payload: 'ROLE_PARTNER' },
@@ -149,11 +149,11 @@ const sendStudentMenu = async (psid, token) => {
   await callSendAPI(psid, {
     text: `🌟 Hello future scholar! TCL Global empowers thousands of students worldwide.
 
-You can explore on your own through our mobile app:
+👨‍🎓 Apply directly to over 100 global universities yourself using our mobile app:
 • Android: https://play.google.com/store/apps/details?id=com.ktpprod.tclglobalmobileapp
 • Apple Store: https://apps.apple.com/gb/app/tcl-global/id6670448421?platform=iphone
 
-What would you like to do next?`,
+Have quick questions or want one of our expert counselors to call you? Choose from below!`,
     quick_replies: [
       { content_type: 'text', title: 'FAQ', payload: 'STUDENT_FAQ' },
       { content_type: 'text', title: 'Talk to counselor', payload: 'STUDENT_COUNSELOR' },
@@ -204,17 +204,27 @@ https://www.tclglobal.co.uk/branches`,
 
 const sendCounselorRequest = async (psid, token) => {
   await callSendAPI(psid, {
-    text: `👩‍💼 To connect you with a counselor, please send all your details in one message:
-• Name (e.g. John Doe)
-• Contact Number with country code (e.g. +44 7123 456789)
-• Email Address (e.g. john@example.com)
-• Closest City & Country (e.g. London, UK)`
+    text: `👩‍💼Perfect, let me connect you with one of our expert counslors for personalized guidance. To guide you better, please send all your details in one message:
+• Name
+• Contact Number with country code
+• Email Address
+• Closest City & Country
+
+Example reply (please follow this format!):
+
+Your Name
++8801234567890
+your_email@gmail.com
+Dhaka, Bangladesh
+`
   }, token);
 };
 
 const sendAfterCounselorInfo = async (psid, token) => {
   await callSendAPI(psid, {
-    text: `Thank you! 🙏 Would you like to:
+    text: `Thank you! I'll pass this info to our counselors and they will call you back. 🙏 
+    
+  We can serve you even better if you provide some more info. Would you like to:
 • Provide study preferences for a tailored match
 • Return to the student menu`,
     quick_replies: [
@@ -226,7 +236,7 @@ const sendAfterCounselorInfo = async (psid, token) => {
 
 const sendStudyPrefPrompt = async (psid, token) => {
   await callSendAPI(psid, {
-    text: `📋 Please share your preferences in one message:
+    text: `Amazing! 📋 Please share your preferences in one message:
 • Preferred destination country (e.g. UK)
 • Planned intake year (e.g. 2026)
 • Desired course (e.g. MSc Computer Science)
@@ -244,16 +254,16 @@ IELTS 7`
 
 const sendAfterStudyPref = async (psid, token) => {
   await callSendAPI(psid, {
-    text: `Thanks for sharing! We'll match you with the best options. Return to the student menu?`,
+    text: `Thanks for sharing! I'll pass these info to our counselor as well, so that they can guide you better. \n\nReturn to the student menu?`,
     quick_replies: [{ content_type: 'text', title: 'Student menu', payload: 'ROLE_STUDENT' }]
   }, token);
 };
 
 const sendPartnerInfo = async (psid, token) => {
   await callSendAPI(psid, {
-    text: `🤝 Thank you for partnering with TCL Global! Our agency team will reach out shortly.
-For immediate follow-up:
-✉️ partner@tclglobal.co.uk
+    text: `🤝 Thank you for your interest in partnering with TCL Global! Our agency team will reach out shortly.
+If you need an immediate follow-up, please reach us at:
+✉️ partner@tclglobal.co.uk or
 📞 +44 7983 266707
 
 Return to the main menu?`,
@@ -264,7 +274,7 @@ Return to the main menu?`,
 const sendUniversityInfo = async (psid, token) => {
   await callSendAPI(psid, {
     text: `🎓 Thanks for connecting! Our University Relations team will be in touch soon.
-For urgent queries:
+If you need an immediate follow-up, please reach us at:
 ✉️ corporate@tclglobal.co.uk
 📞 +44 7932 045457
 
