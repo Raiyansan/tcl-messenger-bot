@@ -136,7 +136,7 @@ const callSendAPI = async (psid, message, token) => {
 
 const sendRoleMenu = async (psid, token) => {
   await callSendAPI(psid, {
-    text: "🎉 Welcome to TCL Global, a world-leading edtech agency with 20+ branches across 13+ countries! I'm Aithena, your AI assistant—how can I help you today?",
+    text: "Hello! I'm Aithena, TCL's virtual assistant. \nWelcome to TCL Global, a world-leading edtech agency with 20+ branches across 13+ countries and 60,000+ students guided so far! \n Whether you want to talk to any of our counselors or just have quesrtions that I can answer for you, I'll get you there in a few clicks! \n\n Let's get started! what's your role?",
     quick_replies: [
       { content_type: 'text', title: 'Student', payload: 'ROLE_STUDENT' },
       { content_type: 'text', title: 'Partner Agency', payload: 'ROLE_PARTNER' },
