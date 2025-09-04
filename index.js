@@ -136,7 +136,7 @@ const callSendAPI = async (psid, message, token) => {
 
 const sendRoleMenu = async (psid, token) => {
   await callSendAPI(psid, {
-    text: "Hello! I'm Aithena, TCL's virtual assistant. 🤓 \n\nWelcome to TCL Global, a world-leading edtech agency with 20+ branches across 13+ countries and 60,000+ students guided so far! 🎉 \n\nWhether you want to talk to any of our counselors or just have quesrtions that I can answer for you, I'll get you there in a few clicks! 😎 \n\nLet's get started! what's your role?",
+    text: "Hello! I'm Aithena, TCL's virtual assistant. 🤓 \n\nWelcome to TCL Global, a world-leading edtech agency with 20+ branches across 13+ countries and 60,000+ students guided so far! 🎉 \n\nPromise that I'll get you what you want in a just a few clicks! 😎 \n\nLet's get started! What's your role?",
     quick_replies: [
       { content_type: 'text', title: 'Student', payload: 'ROLE_STUDENT' },
       { content_type: 'text', title: 'Partner Agency', payload: 'ROLE_PARTNER' },
@@ -147,13 +147,14 @@ const sendRoleMenu = async (psid, token) => {
 
 const sendStudentMenu = async (psid, token) => {
   await callSendAPI(psid, {
-    text: `🌟 Hello future scholar! TCL Global empowers thousands of students worldwide.
+    text: `🌟 Hello future scholar! TCL Global empowers thousands of students worldwide!
 
-👨‍🎓 Apply directly to over 100 global universities yourself using our mobile app:
+👨‍🎓 Want to apply directly yourself? Use our mobile app to apply to over 100 global universities:
+
 • Android: https://play.google.com/store/apps/details?id=com.ktpprod.tclglobalmobileapp
 • Apple Store: https://apps.apple.com/gb/app/tcl-global/id6670448421?platform=iphone
 
-Have quick questions or want one of our expert counselors to call you? Choose from below!`,
+Not sure yet? Have quick questions? \n\nOr want one of our expert counselors to guide you? Choose from below instead and I'll get you there!`,
     quick_replies: [
       { content_type: 'text', title: 'FAQ', payload: 'STUDENT_FAQ' },
       { content_type: 'text', title: 'Talk to counselor', payload: 'STUDENT_COUNSELOR' },
@@ -164,7 +165,7 @@ Have quick questions or want one of our expert counselors to call you? Choose fr
 
 const sendStudentFAQMenu = async (psid, token) => {
   await callSendAPI(psid, {
-    text: "❓ Which FAQ can I answer for you?",
+    text: "Sure! Which question can I answer for you?",
     quick_replies: [
       { content_type: 'text', title: 'Agency Fees', payload: 'FAQ_FEES' },
       { content_type: 'text', title: 'Destinations', payload: 'FAQ_DEST' },
@@ -204,7 +205,7 @@ https://www.tclglobal.co.uk/branches`,
 
 const sendCounselorRequest = async (psid, token) => {
   await callSendAPI(psid, {
-    text: `👩‍💼Perfect, let me connect you with one of our expert counslors for personalized guidance. To guide you better, please send all your details in one message:
+    text: `👩‍💼Perfect, let me connect you to one of our expert counselors for personalized guidance. To guide you better, please send all your details in one message:
 • Name
 • Contact Number with country code
 • Email Address
@@ -225,6 +226,7 @@ const sendAfterCounselorInfo = async (psid, token) => {
     text: `Thank you! I'll pass this info to our counselors and they will call you back. 🙏 
     
   We can serve you even better if you provide some more info. Would you like to:
+
 • Provide study preferences for a tailored match
 • Return to the student menu`,
     quick_replies: [
@@ -237,11 +239,12 @@ const sendAfterCounselorInfo = async (psid, token) => {
 const sendStudyPrefPrompt = async (psid, token) => {
   await callSendAPI(psid, {
     text: `Amazing! 📋 Please share your preferences in one message:
+
 • Preferred destination country (e.g. UK)
 • Planned intake year (e.g. 2026)
 • Desired course (e.g. MSc Computer Science)
 • Last degree & result (e.g. BSc CSE, CGPA 3.2/4)
-• English test & score (e.g. IELTS 7)
+• (optional) English test & score, if taken (e.g. IELTS 7)
 
 Sample reply:
 UK
@@ -254,7 +257,7 @@ IELTS 7`
 
 const sendAfterStudyPref = async (psid, token) => {
   await callSendAPI(psid, {
-    text: `Thanks for sharing! I'll pass these info to our counselor as well, so that they can guide you better. \n\nReturn to the student menu?`,
+    text: `Thanks for sharing! I'll pass these info to our counselors as well, so that they can guide you better. \n\nReturn to the student menu?`,
     quick_replies: [{ content_type: 'text', title: 'Student menu', payload: 'ROLE_STUDENT' }]
   }, token);
 };
