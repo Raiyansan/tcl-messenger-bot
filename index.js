@@ -206,6 +206,7 @@ https://www.tclglobal.co.uk/branches`,
 const sendCounselorRequest = async (psid, token) => {
   await callSendAPI(psid, {
     text: `👩‍💼Perfect, let me connect you to one of our expert counselors for personalized guidance. To guide you better, please send all your details in one message:
+
 • Name
 • Contact Number with country code
 • Email Address
@@ -225,7 +226,7 @@ const sendAfterCounselorInfo = async (psid, token) => {
   await callSendAPI(psid, {
     text: `Thank you! I'll pass this info to our counselors and they will call you back. 🙏 
     
-  We can serve you even better if you provide some more info. Would you like to:
+We can serve you even better if you provide some more info. \n\nWould you like to:
 
 • Provide study preferences for a tailored match
 • Return to the student menu`,
@@ -240,10 +241,10 @@ const sendStudyPrefPrompt = async (psid, token) => {
   await callSendAPI(psid, {
     text: `Amazing! 📋 Please share your preferences in one message:
 
-• Preferred destination country (e.g. UK)
-• Planned intake year (e.g. 2026)
-• Desired course (e.g. MSc Computer Science)
-• Last degree & result (e.g. BSc CSE, CGPA 3.2/4)
+• Preferred destination country
+• Planned intake year
+• Desired course
+• Last degree & result
 • (optional) English test & score, if taken (e.g. IELTS 7)
 
 Sample reply:
