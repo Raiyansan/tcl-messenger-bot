@@ -13,11 +13,102 @@ const VERIFY_TOKEN = 'tcl_verify_2025';
 const PAGE_TOKENS = {
   '102616602614986': 'EAAUswZBZCm9DQBPM3xlidwRkiX7ekF4sVZACeMwVG9kcA3FcT3T2K0I7jM0Huqm5wvH41lxrSj4lgZC7RJhjJa9LZBW3U84ryEP372rUws9S4yevZCtrb9ZBmI73c66e4nna1nQG3ADJDa2yq6d5bwRyIKBayLZCv5vYcNYZAXPyCq9CdBoJZCVZCZBDUYLjJ9vhFjtBJa0eXEz8XGRQCDot6gXR', // Mongolia
   '100901415171135': 'EAAUswZBZCm9DQBPWKOpNSuJgiQTyZCPxjtiSXqZCi1UBRjWV1tPchmnu9kaaZBZAGcnofRgRqxl8mkI0sEarvwH9VyYQlbGd21ewQgQtcZA7Ef2iOtupoNwVlGKrzj35zgRcbk46NFlRgrqyBECcb1dtp3gcSQuPS9vaYXxpnERDHToSQZBu8ppBNqI5hbpAiIDMv4VH', // India
-  '119924653251800': 'EAAUswZBZCm9DQBPXhGhimZAVl76VSfQsgNZB9A7Y5DvNNTv7QTfMXxRBWiCVhWyTI6Im1M0TFqykMoIZC8Yy2RX5wntofGHKdojqdaG7XfFRxVAe5EPXfZAZC24ZBETdu9jJ0IdxDxjyIuiQ5ldLCrpgq16xc359qwNZCAZAmWEJVDsJYzwAE0JgM1Ebbk9QjQMqrzpuD3', //Pakistan
-  '102101415212896': 'EAAUswZBZCm9DQBPWE0zMoHvx68QVkY339BDZCHZAU7ZAKwl5DvZCyc7LT093RtjVXC5qp7y70iO1X27nOHjR2dlGZBlrqWxvDhBLWu7U872O8mwVeFdGJZCh8NRJmltxEbVBVmet4o9Xm0vgpr8UF63p4rOygJofaspwxarXoOKb01JcEsM0QNwfEZA1ENhZCCNThcAXkn' // Bangladesh
-
+  '119924653251800': 'EAAUswZBZCm9DQBPXhGhimZAVl76VSfQsgNZB9A7Y5DvNNTv7QTfMXxRBWiCVhWyTI6Im1M0TFqykMoIZC8Yy2RX5wntofGHKdojqdaG7XfFRxVAe5EPXfZAZC24ZBETdu9jJ0IdxDxjyIuiQ5ldLCrpgq16xc359qwNZCAZAmWEJVDsJYzwAE0JgM1Ebbk9QjQMqrzpuD3', // Pakistan
+  '102101415212896': 'EAAUswZBZCm9DQBPWE0zMoHvx68QVkY339BDZCHZAU7ZAKwl5DvZCyc7LT093RtjVXC5qp7y70iO1X27nOHjR2dlGZBlrqWxvDhBLWu7U872O8mwVeFdGJZCh8NRJmltxEbVBVmet4o9Xm0vgpr8UF63p4rOygJofaspwxarXoOKb01JcEsM0QNwfEZA1ENhZCCNThcAXkn'  // Bangladesh
 };
 
+// ===== CRM API (TEST) =====
+const CRM_URL = 'https://main-service-iyy5u6jjmq-el.a.run.app/students/facebookquickadd';
+
+// Small in-memory session store: psid -> { email, studentId, ts }
+const sessionStore = new Map();
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+function upsertSession(psid, patch) {
+  const prev = sessionStore.get(psid) || {};
+  sessionStore.set(psid, { ...prev, ...patch, ts: Date.now() });
+}
+
+function pruneSessions() {
+  const now = Date.now();
+  for (const [psid, v] of sessionStore.entries()) {
+    if (!v.ts || now - v.ts > SESSION_TTL_MS) sessionStore.delete(psid);
+  }
+}
+// Prune occasionally
+setInterval(pruneSessions, 60 * 60 * 1000); // hourly
+
+// Helpers to extract contact details from a free-text message (best effort)
+function extractEmail(text) {
+  const m = text.match(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i);
+  return m ? m[0].trim() : null;
+}
+function extractPhone(text) {
+  // simple international-ish match
+  const m = text.match(/(\+?\d[\d\s\-().]{6,}\d)/);
+  return m ? m[0].replace(/[^\d+]/g, '').trim() : null;
+}
+function extractName(text, email, phone) {
+  // Use first non-empty line that isn't clearly an email/phone
+  const lines = text.split(/\r?\n|,/).map(s => s.trim()).filter(Boolean);
+  for (const line of lines) {
+    const isEmail = email && line.includes(email);
+    const isPhone = phone && line.replace(/[^\d+]/g, '') === phone;
+    if (!isEmail && !isPhone) return line;
+  }
+  return 'Unknown';
+}
+
+// Call CRM to create/update student
+async function crmCreateOrUpdateStudent({ fullname, email, phoneNumber }) {
+  const payload = { fullname, email, phoneNumber };
+  console.log('📤 CRM create/update payload:', payload);
+
+  try {
+    const res = await fetch(CRM_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    // Most likely JSON, but guard for text
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = { raw: text }; }
+
+    console.log('📥 CRM create/update response:', data);
+    return data;
+  } catch (err) {
+    console.error('❌ CRM create/update error:', err);
+    return null;
+  }
+}
+
+// Call CRM to add a note using email + notes
+async function crmAddNoteByEmail(email, notes) {
+  const payload = { email, notes };
+  console.log('📤 CRM add-note payload:', payload);
+
+  try {
+    const res = await fetch(CRM_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = { raw: text }; }
+
+    console.log('📥 CRM add-note response:', data);
+    return data;
+  } catch (err) {
+    console.error('❌ CRM add-note error:', err);
+    return null;
+  }
+}
+
+// Track user state
 const userStates = {};
 
 app.get('/webhook', (req, res) => {
@@ -102,15 +193,58 @@ app.post('/webhook', async (req, res) => {
         if (['hi', 'hello', 'hey', 'start'].includes(lower)) {
           userStates[psid] = null;
           await sendRoleMenu(psid, token);
-        } else if (userStates[psid] === 'AWAITING_COUNSELOR') {
+        }
+        else if (userStates[psid] === 'AWAITING_COUNSELOR') {
+          // Keep your local file log
           fs.appendFileSync('submissions.txt', `${psid}|counselor|${text}\n\n`);
+
+          // ===== CRM: create/update student =====
+          try {
+            const email = extractEmail(text);
+            const phoneNumber = extractPhone(text);
+            const fullname = extractName(text, email, phoneNumber);
+
+            if (!email) {
+              console.warn(`⚠️ No email found in counselor details from PSID ${psid}. CRM create skipped.`);
+            } else {
+              const crmRes = await crmCreateOrUpdateStudent({ fullname, email, phoneNumber });
+              if (crmRes && crmRes.studentId) {
+                upsertSession(psid, { email, studentId: crmRes.studentId });
+                console.log(`✅ Stored session for PSID ${psid}:`, sessionStore.get(psid));
+              } else if (email) {
+                // Still keep email for follow-up notes even if studentId missing
+                upsertSession(psid, { email });
+              }
+            }
+          } catch (e) {
+            console.error('❌ Error processing counselor info -> CRM:', e);
+          }
+
           userStates[psid] = null;
           await sendAfterCounselorInfo(psid, token);
-        } else if (userStates[psid] === 'AWAITING_PREF') {
+        }
+        else if (userStates[psid] === 'AWAITING_PREF') {
+          // Keep your local file log
           fs.appendFileSync('submissions.txt', `${psid}|preferences|${text}\n\n`);
+
+          // ===== CRM: add note =====
+          try {
+            const sess = sessionStore.get(psid);
+            let email = sess?.email || extractEmail(text);
+            if (!email) {
+              console.warn(`⚠️ No email available for PSID ${psid} when adding note. Note call skipped.`);
+            } else {
+              const crmRes = await crmAddNoteByEmail(email, text);
+              console.log(`📝 Note add result for PSID ${psid}:`, crmRes);
+            }
+          } catch (e) {
+            console.error('❌ Error adding study preference note -> CRM:', e);
+          }
+
           userStates[psid] = null;
           await sendAfterStudyPref(psid, token);
-        } else {
+        }
+        else {
           await callSendAPI(psid, { text: 'Thanks for your message! Use the menu below or type "hi" to start over.' }, token);
         }
       }
@@ -154,7 +288,9 @@ const sendStudentMenu = async (psid, token) => {
 • Android: https://play.google.com/store/apps/details?id=com.ktpprod.tclglobalmobileapp
 • Apple Store: https://apps.apple.com/gb/app/tcl-global/id6670448421?platform=iphone
 
-Not sure yet? Have quick questions? \n\nOr want one of our expert counselors to guide you? Choose from below instead and I'll get you there!`,
+Not sure yet? Have quick questions? 
+
+Or want one of our expert counselors to guide you? Choose from below instead and I'll get you there!`,
     quick_replies: [
       { content_type: 'text', title: 'FAQ', payload: 'STUDENT_FAQ' },
       { content_type: 'text', title: 'Talk to counselor', payload: 'STUDENT_COUNSELOR' },
@@ -226,7 +362,9 @@ const sendAfterCounselorInfo = async (psid, token) => {
   await callSendAPI(psid, {
     text: `Thank you! I'll pass this info to our counselors and they will call you back. 🙏 
     
-We can serve you even better if you provide some more info. \n\nWould you like to:
+We can serve you even better if you provide some more info. 
+
+Would you like to:
 
 • Provide study preferences for a tailored match
 • Return to the student menu`,
@@ -258,7 +396,9 @@ IELTS 7`
 
 const sendAfterStudyPref = async (psid, token) => {
   await callSendAPI(psid, {
-    text: `Thanks for sharing! I'll pass these info to our counselors as well, so that they can guide you better. \n\nReturn to the student menu?`,
+    text: `Thanks for sharing! I'll pass these info to our counselors as well, so that they can guide you better. 
+
+Return to the student menu?`,
     quick_replies: [{ content_type: 'text', title: 'Student menu', payload: 'ROLE_STUDENT' }]
   }, token);
 };
