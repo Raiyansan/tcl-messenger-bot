@@ -1,3 +1,4 @@
+// index.js
 const express = require('express');
 const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
@@ -15,47 +16,44 @@ const PAGE_TOKENS = {
   '100901415171135': 'EAAUswZBZCm9DQBPWKOpNSuJgiQTyZCPxjtiSXqZCi1UBRjWV1tPchmnu9kaaZBZAGcnofRgRqxl8mkI0sEarvwH9VyYQlbGd21ewQgQtcZA7Ef2iOtupoNwVlGKrzj35zgRcbk46NFlRgrqyBECcb1dtp3gcSQuPS9vaYXxpnERDHToSQZBu8ppBNqI5hbpAiIDMv4VH', // India
   '119924653251800': 'EAAUswZBZCm9DQBPXhGhimZAVl76VSfQsgNZB9A7Y5DvNNTv7QTfMXxRBWiCVhWyTI6Im1M0TFqykMoIZC8Yy2RX5wntofGHKdojqdaG7XfFRxVAe5EPXfZAZC24ZBETdu9jJ0IdxDxjyIuiQ5ldLCrpgq16xc359qwNZCAZAmWEJVDsJYzwAE0JgM1Ebbk9QjQMqrzpuD3', // Pakistan
   '102101415212896': 'EAAUswZBZCm9DQBPWE0zMoHvx68QVkY339BDZCHZAU7ZAKwl5DvZCyc7LT093RtjVXC5qp7y70iO1X27nOHjR2dlGZBlrqWxvDhBLWu7U872O8mwVeFdGJZCh8NRJmltxEbVBVmet4o9Xm0vgpr8UF63p4rOygJofaspwxarXoOKb01JcEsM0QNwfEZA1ENhZCCNThcAXkn',  // Bangladesh
-  '186397314778320': 'EAAUswZBZCm9DQBPYiYMqY6eolJboKBHrYwVCIzPj2CLHUdd5Mi48MCbtEmo9gewSLfzv1uCOuvs8W8O2HcLLXRROph90VmRZCbznVEzxkqWVLMmd5Qnk2yuj18CmbKozWzc1KlT3HUigO4rZCWYDSrdPRvxL2Bj7LFfZCOr24DDZBaZBMZBGh3t3HKv1b2ts3N3jj21W', //Global
-  '110516318192899':'EAAUswZBZCm9DQBPfbsVHiY5wBQm05MTxst1KSILnm13wbXg4ZBOLY9aLa34v2Hm1mJBTtNDg7Y5XZBztMPRX0gfOVpGYh650z8cCjtnhW5klf373YQ3O1zdAtUOBnFhwWulMLEno7fZCEb4K5hXZAzkSMpFqk3FFjMwFDqOjTNfV8U0rIKeiLjkYSha8vG4pL1cCfA', //UAE
-  '110467638231180':'EAAUswZBZCm9DQBPUuEh8zzbZC9btUzb25bVR2ZAcdIxNIYEBhYD6eJpnasN543INtqZBZCVH25Ru7G4Aq4JYy8Mq6HV1gbNTFj68BZB2zF9JL6Y1ECp2xXraIHmWyf9coFyv4YsgJkbVWmaswr0KLAuN5l2vakwQp8ZCoyGZBqZBgxox2I06GiLs1Gav8lyL0IxWycXZA49', //Cameroon
-  '110214145145908':'EAAUswZBZCm9DQBPfWLTEZBb3yrgLkJQ1i5hWc89VYWdYSVxjZCbD8ZB2pEdSlPvi0mFU6PDSgIcCK774q4jEXe1uOKZAt4rErmvtX8hnWplCHjhXRfnr9M8EBarn6jtPZAqPkpGMqTNUMtcPbZACCVAK5BdPoz1bVpCuNertM0vZCbC8LrCbqRB3djLKPTl34vjc4Xcmz', //Qatar
-  '104908489019673':'EAAUswZBZCm9DQBPTC3knIsKOZAfrtuArM3rB5OHwQSlxYESE2qwxga2lmupvYJZBatgvLuLY2bWmn2IZB9IYlcVEXbYgSI8vPT02c6c9UfXK4izSPsequazLKo5OeQyOT77HASrzLe8byPZCLlL825i5iF9hbXZAcZBwxCX3JTACG4I42lIeXR5odwcPmjfZCIWVFeWIp', //kuwait
-  '100927771607141':'EAAUswZBZCm9DQBPftJ10vwOfgMKmeJ6VUKunZAN5KOo78hnIn3kmndB3dLGvJiHwHfsvrClLZAFm4tqpbx14GjRmOBBW5oz8Pb1CZB8nZAi2QckM6p9QaSb56r6ZCj9ZCaAAlW68kdEZB3GZB0ZCluDU3ybf8teZBzuZCpkDbWUO28JdVtNZC8HQoQTYCCXMgjFWBnbcSXM7kG' //Morocco
+  '186397314778320': 'EAAUswZBZCm9DQBPYiYMqY6eolJboKBHrYwVCIzPj2CLHUdd5Mi48MCbtEmo9gewSLfzv1uCOuvs8W8O2HcLLXRROph90VmRZCbznVEzxkqWVLMmd5Qnk2yuj18CmbKozWzc1KlT3HUigO4rZCWYDSrdPRvxL2Bj7LFfZCOr24DDZBaZBMZBGh3t3HKv1b2ts3N3jj21W', // Global
+  '110516318192899': 'EAAUswZBZCm9DQBPfbsVHiY5wBQm05MTxst1KSILnm13wbXg4ZBOLY9aLa34v2Hm1mJBTtNDg7Y5XZBztMPRX0gfOVpGYh650z8cCjtnhW5klf373YQ3O1zdAtUOBnFhwWulMLEno7fZCEb4K5hXZAzkSMpFqk3FFjMwFDqOjTNfV8U0rIKeiLjkYSha8vG4pL1cCfA', // UAE
+  '110467638231180': 'EAAUswZBZCm9DQBPUuEh8zzbZC9btUzb25bVR2ZAcdIxNIYEBhYD6eJpnasN543INtqZBZCVH25Ru7G4Aq4JYy8Mq6HV1gbNTFj68BZB2zF9JL6Y1ECp2xXraIHmWyf9coFyv4YsgJkbVWmaswr0KLAuN5l2vakwQp8ZCoyGZBqZBgxox2I06GiLs1Gav8lyL0IxWycXZA49', // Cameroon
+  '110214145145908': 'EAAUswZBZCm9DQBPfWLTEZBb3yrgLkJQ1i5hWc89VYWdYSVxjZCbD8ZB2pEdSlPvi0mFU6PDSgIcCK774q4jEXe1uOKZAt4rErmvtX8hnWplCHjhXRfnr9M8EBarn6jtPZAqPkpGMqTNUMtcPbZACCVAK5BdPoz1bVpCuNertM0vZCbC8LrCbqRB3djLKPTl34vjc4Xcmz', // Qatar
+  '104908489019673': 'EAAUswZBZCm9DQBPTC3knIsKOZAfrtuArM3rB5OHwQSlxYESE2qwxga2lmupvYJZBatgvLuLY2bWmn2IZB9IYlcVEXbYgSI8vPT02c6c9UfXK4izSPsequazLKo5OeQyOT77HASrzLe8byPZCLlL825i5iF9hbXZAcZBwxCX3JTACG4I42lIeXR5odwcPmjfZCIWVFeWIp', // Kuwait
+  '100927771607141': 'EAAUswZBZCm9DQBPftJ10vwOfgMKmeJ6VUKunZAN5KOo78hnIn3kmndB3dLGvJiHwHfsvrClLZAFm4tqpbx14GjRmOBBW5oz8Pb1CZB8nZAi2QckM6p9QaSb56r6ZCj9ZCaAAlW68kdEZB3GZB0ZCluDU3ybf8teZBzuZCpkDbWUO28JdVtNZC8HQoQTYCCXMgjFWBnbcSXM7kG'  // Morocco
 };
 
 // ===== CRM API (TEST) =====
 const CRM_URL = 'https://main-service-iyy5u6jjmq-el.a.run.app/students/facebookquickadd';
 
-// Small in-memory session store: psid -> { email, studentId, ts }
+// Small in-memory session store: convId -> { email, studentId, ts }
 const sessionStore = new Map();
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-function upsertSession(psid, patch) {
-  const prev = sessionStore.get(psid) || {};
-  sessionStore.set(psid, { ...prev, ...patch, ts: Date.now() });
+function upsertSession(convId, patch) {
+  const prev = sessionStore.get(convId) || {};
+  sessionStore.set(convId, { ...prev, ...patch, ts: Date.now() });
 }
 
 function pruneSessions() {
   const now = Date.now();
-  for (const [psid, v] of sessionStore.entries()) {
-    if (!v.ts || now - v.ts > SESSION_TTL_MS) sessionStore.delete(psid);
+  for (const [k, v] of sessionStore.entries()) {
+    if (!v.ts || now - v.ts > SESSION_TTL_MS) sessionStore.delete(k);
   }
 }
-// Prune occasionally
 setInterval(pruneSessions, 60 * 60 * 1000); // hourly
 
-// Helpers to extract contact details from a free-text message (best effort)
+// Helpers to extract contact details (best effort)
 function extractEmail(text) {
   const m = text.match(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i);
   return m ? m[0].trim() : null;
 }
 function extractPhone(text) {
-  // simple international-ish match
   const m = text.match(/(\+?\d[\d\s\-().]{6,}\d)/);
   return m ? m[0].replace(/[^\d+]/g, '').trim() : null;
 }
 function extractName(text, email, phone) {
-  // Use first non-empty line that isn't clearly an email/phone
   const lines = text.split(/\r?\n|,/).map(s => s.trim()).filter(Boolean);
   for (const line of lines) {
     const isEmail = email && line.includes(email);
@@ -65,23 +63,19 @@ function extractName(text, email, phone) {
   return 'Unknown';
 }
 
-// Call CRM to create/update student
+// CRM calls
 async function crmCreateOrUpdateStudent({ fullname, email, phoneNumber }) {
   const payload = { fullname, email, phoneNumber };
   console.log('📤 CRM create/update payload:', payload);
-
   try {
     const res = await fetch(CRM_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-
-    // Most likely JSON, but guard for text
     const text = await res.text();
     let data;
     try { data = JSON.parse(text); } catch { data = { raw: text }; }
-
     console.log('📥 CRM create/update response:', data);
     return data;
   } catch (err) {
@@ -90,22 +84,18 @@ async function crmCreateOrUpdateStudent({ fullname, email, phoneNumber }) {
   }
 }
 
-// Call CRM to add a note using email + notes
 async function crmAddNoteByEmail(email, notes) {
   const payload = { email, notes };
   console.log('📤 CRM add-note payload:', payload);
-
   try {
     const res = await fetch(CRM_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-
     const text = await res.text();
     let data;
     try { data = JSON.parse(text); } catch { data = { raw: text }; }
-
     console.log('📥 CRM add-note response:', data);
     return data;
   } catch (err) {
@@ -114,9 +104,10 @@ async function crmAddNoteByEmail(email, notes) {
   }
 }
 
-// Track user state
-const userStates = {};
+// Track user state: convId -> state
+const userStates = new Map();
 
+/** 1) Verification Endpoint */
 app.get('/webhook', (req, res) => {
   const mode = req.query['hub.mode'];
   const token = req.query['hub.verify_token'];
@@ -128,6 +119,7 @@ app.get('/webhook', (req, res) => {
   res.sendStatus(403);
 });
 
+/** 2) Message Handler */
 app.post('/webhook', async (req, res) => {
   console.log('▶️ Incoming payload:', JSON.stringify(req.body, null, 2));
   const body = req.body;
@@ -136,124 +128,138 @@ app.post('/webhook', async (req, res) => {
     for (const entry of body.entry) {
       const pageId = entry.id;
       const token = PAGE_TOKENS[pageId];
-      if (!token) continue;
-
-      const event = entry.messaging[0];
-      const psid = event.sender.id;
-
-      // GET_STARTED
-      if (event.postback && event.postback.payload === 'GET_STARTED') {
-        userStates[psid] = null;
-        await sendRoleMenu(psid, token);
+      if (!token) {
+        console.warn(`⚠️ No PAGE_ACCESS_TOKEN configured for page ${pageId}`);
+        continue;
       }
 
-      // Quick replies
-      else if (event.message && event.message.quick_reply) {
-        const p = event.message.quick_reply.payload;
-        switch (p) {
-          case 'ROLE_STUDENT':
-            userStates[psid] = null;
-            await sendStudentMenu(psid, token);
-            break;
-          case 'STUDENT_FAQ':
-            await sendStudentFAQMenu(psid, token);
-            break;
-          case 'FAQ_FEES':
-            await sendFAQFees(psid, token);
-            break;
-          case 'FAQ_DEST':
-            await sendFAQDest(psid, token);
-            break;
-          case 'FAQ_BRANCHES':
-            await sendFAQBranches(psid, token);
-            break;
-          case 'STUDENT_COUNSELOR':
-            userStates[psid] = 'AWAITING_COUNSELOR';
-            await sendCounselorRequest(psid, token);
-            break;
-          case 'STUDY_PREF':
-            userStates[psid] = 'AWAITING_PREF';
-            await sendStudyPrefPrompt(psid, token);
-            break;
-          case 'ROLE_PARTNER':
-            userStates[psid] = null;
-            await sendPartnerInfo(psid, token);
-            break;
-          case 'ROLE_UNI':
-            userStates[psid] = null;
-            await sendUniversityInfo(psid, token);
-            break;
-          case 'MAIN_MENU':
-          case 'RESTART':
-            userStates[psid] = null;
-            await sendRoleMenu(psid, token);
-            break;
-        }
-      }
+      // ⚠️ Process *all* events in this delivery (not just [0])
+      for (const event of entry.messaging) {
+        const psid = event.sender.id;
+        const convId = `${pageId}:${psid}`;
 
-      // Free text
-      else if (event.message && event.message.text) {
-        const text = event.message.text.trim();
-        const lower = text.toLowerCase();
-
-        if (['hi', 'hello', 'hey', 'start'].includes(lower)) {
-          userStates[psid] = null;
+        // GET_STARTED
+        if (event.postback && event.postback.payload === 'GET_STARTED') {
+          userStates.set(convId, null);
           await sendRoleMenu(psid, token);
+          continue;
         }
-        else if (userStates[psid] === 'AWAITING_COUNSELOR') {
-          // Keep your local file log
-          fs.appendFileSync('submissions.txt', `${psid}|counselor|${text}\n\n`);
 
-          // ===== CRM: create/update student =====
-          try {
-            const email = extractEmail(text);
-            const phoneNumber = extractPhone(text);
-            const fullname = extractName(text, email, phoneNumber);
+        // Quick replies
+        if (event.message && event.message.quick_reply) {
+          const p = event.message.quick_reply.payload;
+          console.log(`📩 Quick reply (page ${pageId}): ${p}`);
+          switch (p) {
+            case 'ROLE_STUDENT':
+              userStates.set(convId, null);
+              await sendStudentMenu(psid, token);
+              break;
+            case 'STUDENT_FAQ':
+              await sendStudentFAQMenu(psid, token);
+              break;
+            case 'FAQ_FEES':
+              await sendFAQFees(psid, token);
+              break;
+            case 'FAQ_DEST':
+              await sendFAQDest(psid, token);
+              break;
+            case 'FAQ_BRANCHES':
+              await sendFAQBranches(psid, token);
+              break;
+            case 'STUDENT_COUNSELOR':
+              userStates.set(convId, 'AWAITING_COUNSELOR');
+              await sendCounselorRequest(psid, token);
+              break;
+            case 'STUDY_PREF':
+              userStates.set(convId, 'AWAITING_PREF');
+              await sendStudyPrefPrompt(psid, token);
+              break;
+            case 'ROLE_PARTNER':
+              userStates.set(convId, null);
+              await sendPartnerInfo(psid, token);
+              break;
+            case 'ROLE_UNI':
+              userStates.set(convId, null);
+              await sendUniversityInfo(psid, token);
+              break;
+            case 'MAIN_MENU':
+            case 'RESTART':
+              userStates.set(convId, null);
+              await sendRoleMenu(psid, token);
+              break;
+            default:
+              await callSendAPI(psid, { text: 'Sorry, I didn’t understand that. Please choose an option.' }, token);
+          }
+          continue;
+        }
 
-            if (!email) {
-              console.warn(`⚠️ No email found in counselor details from PSID ${psid}. CRM create skipped.`);
-            } else {
-              const crmRes = await crmCreateOrUpdateStudent({ fullname, email, phoneNumber });
-              if (crmRes && crmRes.studentId) {
-                upsertSession(psid, { email, studentId: crmRes.studentId });
-                console.log(`✅ Stored session for PSID ${psid}:`, sessionStore.get(psid));
-              } else if (email) {
-                // Still keep email for follow-up notes even if studentId missing
-                upsertSession(psid, { email });
+        // Free text
+        if (event.message && event.message.text) {
+          const text = event.message.text.trim();
+          const lower = text.toLowerCase();
+          const state = userStates.get(convId);
+
+          console.log(`📩 Text from ${psid} on page ${pageId} [state=${state || 'none'}]: ${text}`);
+
+          if (['hi', 'hello', 'hey', 'start'].includes(lower)) {
+            userStates.set(convId, null);
+            await sendRoleMenu(psid, token);
+          }
+          else if (state === 'AWAITING_COUNSELOR') {
+            // Local log (your original behavior)
+            fs.appendFileSync('submissions.txt', `${psid}|counselor|${text}\n\n`);
+
+            // CRM: create/update student
+            try {
+              const email = extractEmail(text);
+              const phoneNumber = extractPhone(text);
+              const fullname = extractName(text, email, phoneNumber);
+
+              if (!email) {
+                console.warn(`⚠️ No email found in counselor details for conv ${convId}. CRM call skipped.`);
+              } else {
+                const crmRes = await crmCreateOrUpdateStudent({ fullname, email, phoneNumber });
+                if (crmRes && crmRes.studentId) {
+                  upsertSession(convId, { email, studentId: crmRes.studentId });
+                  console.log(`✅ Session stored for ${convId}:`, sessionStore.get(convId));
+                } else {
+                  // still keep email for notes follow-up
+                  upsertSession(convId, { email });
+                }
               }
+            } catch (e) {
+              console.error('❌ Error processing counselor info -> CRM:', e);
             }
-          } catch (e) {
-            console.error('❌ Error processing counselor info -> CRM:', e);
+
+            userStates.set(convId, null);
+            await sendAfterCounselorInfo(psid, token);
           }
+          else if (state === 'AWAITING_PREF') {
+            // Local log
+            fs.appendFileSync('submissions.txt', `${psid}|preferences|${text}\n\n`);
 
-          userStates[psid] = null;
-          await sendAfterCounselorInfo(psid, token);
-        }
-        else if (userStates[psid] === 'AWAITING_PREF') {
-          // Keep your local file log
-          fs.appendFileSync('submissions.txt', `${psid}|preferences|${text}\n\n`);
-
-          // ===== CRM: add note =====
-          try {
-            const sess = sessionStore.get(psid);
-            let email = sess?.email || extractEmail(text);
-            if (!email) {
-              console.warn(`⚠️ No email available for PSID ${psid} when adding note. Note call skipped.`);
-            } else {
-              const crmRes = await crmAddNoteByEmail(email, text);
-              console.log(`📝 Note add result for PSID ${psid}:`, crmRes);
+            // CRM: add note
+            try {
+              const sess = sessionStore.get(convId);
+              let email = sess?.email || extractEmail(text);
+              if (!email) {
+                console.warn(`⚠️ No email available for ${convId} when adding note. Skipping note call.`);
+              } else {
+                const crmRes = await crmAddNoteByEmail(email, text);
+                console.log(`📝 Note add result for ${convId}:`, crmRes);
+              }
+            } catch (e) {
+              console.error('❌ Error adding study preference note -> CRM:', e);
             }
-          } catch (e) {
-            console.error('❌ Error adding study preference note -> CRM:', e);
-          }
 
-          userStates[psid] = null;
-          await sendAfterStudyPref(psid, token);
+            userStates.set(convId, null);
+            await sendAfterStudyPref(psid, token);
+          }
+          else {
+            await callSendAPI(psid, { text: 'Thanks for your message! Use the menu below or type "hi" to start over.' }, token);
+          }
         }
-        else {
-          await callSendAPI(psid, { text: 'Thanks for your message! Use the menu below or type "hi" to start over.' }, token);
-        }
-      }
+      } // end for each event
     }
     res.sendStatus(200);
   } else {
@@ -261,12 +267,9 @@ app.post('/webhook', async (req, res) => {
   }
 });
 
-// ----- MESSAGING FUNCTIONS -----
+// ----- MESSAGING FUNCTIONS (texts unchanged) -----
 const callSendAPI = async (psid, message, token) => {
-  const body = {
-    recipient: { id: psid },
-    message
-  };
+  const body = { recipient: { id: psid }, message };
   await fetch(`https://graph.facebook.com/v16.0/me/messages?access_token=${token}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -433,6 +436,6 @@ Return to the main menu?`,
   }, token);
 };
 
-// Launch the server 
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Webhook listening on port ${PORT}`));
