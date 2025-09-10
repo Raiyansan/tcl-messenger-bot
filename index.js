@@ -25,7 +25,7 @@ const PAGE_TOKENS = {
 };
 
 // ===== CRM API (TEST) =====
-const CRM_URL = 'https://main-service-iyy5u6jjmq-el.a.run.app/students/facebookquickadd';
+const CRM_URL = 'https://main-service-niks6pjfzq-el.a.run.app/students/facebookquickadd';
 
 // Small in-memory session store: convId -> { email, studentId, ts }
 const sessionStore = new Map();
